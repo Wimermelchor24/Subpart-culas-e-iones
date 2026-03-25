@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructura Atómica</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Decorative Elements -->
+    <div class="background-elements">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        
+        <!-- Atom Graphics -->
+        <div class="atom-decoration atom-top-right">
+            <div class="nucleus"></div>
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+        </div>
+        
+        <div class="atom-decoration atom-bottom-left">
+            <div class="nucleus"></div>
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+        </div>
+    </div>
+
+    <main class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-atom"></i>
+            </div>
+            <h1>Estructura Atómica</h1>
+            <p>Calculadora interactiva de subpartículas e iones</p>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Contenedor de Ingresos -->
+            <div id="inputsContainer">
+                <section class="card input-card species-input-block">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2><i class="fa-solid fa-pen-to-square"></i> Ingresa los Datos</h2>
+                            <p>Completa al menos dos campos para predecir el resto.</p>
+                        </div>
+                        <button class="remove-block-btn" style="display: none; background: rgba(255, 118, 117, 0.1); color: var(--accent-red); border: 1px solid rgba(255, 118, 117, 0.2); border-radius: 8px; padding: 0.5rem 0.8rem; cursor: pointer;"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    
+                    <div class="inputs-grid">
+                        <div class="input-group" style="grid-column: 1 / -1;">
+                            <label>Símbolo / Especie</label>
+                            <input type="text" class="inputSym" placeholder="X+3">
+                        </div>
+                        <div class="input-group">
+                            <label>Número Atómico (Z)</label>
+                            <input type="number" class="inputZ" min="1" max="118" placeholder="Ej. 11">
+                        </div>
+                        <div class="input-group">
+                            <label>Número de Masa (A)</label>
+                            <input type="number" class="inputA" min="1" placeholder="Ej. 23">
+                        </div>
+                        <div class="input-group">
+                            <label>Protones (p⁺)</label>
+                            <input type="number" class="inputP" min="1" max="118" placeholder="Ej. 11">
+                        </div>
+                        <div class="input-group">
+                            <label>Electrones (e⁻)</label>
+                            <input type="number" class="inputE" min="0" placeholder="Ej. 10">
+                        </div>
+                        <div class="input-group">
+                            <label>Neutrones (n⁰)</label>
+                            <input type="number" class="inputN" min="0" placeholder="Ej. 12">
+                        </div>
+                        <div class="input-group">
+                            <label>Carga</label>
+                            <input type="number" class="inputCharge" placeholder="Ej. 1 (para +1), -2">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <button id="addSpeciesBtn" style="width: 100%; border: 2px dashed rgba(108, 92, 231, 0.4); background: rgba(108, 92, 231, 0.05); color: var(--accent); padding: 1rem; border-radius: 16px; cursor: pointer; transition: var(--transition); font-weight: 600; font-size: 1rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fa-solid fa-plus"></i> Añadir Otra Especie
+            </button>
+
+            <div class="actions" style="margin-bottom: 2rem;">
+                <button class="btn btn-primary" id="calcBtn">
+                    <i class="fa-solid fa-calculator"></i> Calcular
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">
+                    <i class="fa-solid fa-eraser"></i> Limpiar
+                </button>
+            </div>
+
+            <!-- Sección de Resultados (Oculta hasta calcular) -->
+            <section class="card results-card" id="resultsSection" style="display: none;">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Resultados del Átomo/Ion</h2>
+                </div>
+
+                <div class="element-showcase">
+                    <div class="symbol-box">
+                        <div class="mass-number" id="resA">23</div>
+                        <div class="atomic-number" id="resZ">11</div>
+                        <div class="symbol-text" id="resSymbol">Na</div>
+                        <div class="charge-indicator" id="resChargeLabel">+1</div>
+                    </div>
+                    <div class="element-info">
+                        <h3 id="resName">Sodio</h3>
+                        <div class="badge-container">
+                            <span class="badge badge-ion" id="resIonType">Catión</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-plus stat-icon protons"></i>
+                        <span class="stat-value" id="statP">11</span>
+                        <span class="stat-label">Protones (p⁺)</span>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-minus stat-icon electrons"></i>
+                        <span class="stat-value" id="statE">10</span>
+                        <span class="stat-label">Electrones (e⁻)</span>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-circle stat-icon neutrons"></i>
+                        <span class="stat-value" id="statN">12</span>
+                        <span class="stat-label">Neutrones (n⁰)</span>
+                    </div>
+                </div>
+
+                <div class="extra-info">
+                    <div class="info-block">
+                        <h4><i class="fa-solid fa-clone"></i> Isótopos (Mismo Z)</h4>
+                        <p id="resIsotopes">Ejemplo: Na-22, Na-24 (el más común es Na-23).</p>
+                    </div>
+                    <div class="info-block">
+                        <h4><i class="fa-solid fa-bolt"></i> Especies Isoelectrónicas (Mismos e⁻)</h4>
+                        <p id="resIsoelectronic">Ejemplo: Ne (neutro), Mg²⁺, F⁻ tienen 10 electrones.</p>
+                    </div>
+                    <div class="info-block">
+                        <h4><i class="fa-solid fa-book-open"></i> Fórmulas Aplicadas</h4>
+                        <p id="resFormulas">A = p⁺ + n⁰ <br> e⁻ = Z - (Carga) <br> Carga = p⁺ - e⁻</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary Table Section (For multiple entries) -->
+            <section class="card results-card" id="summarySection" style="display: none;">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-table-list"></i> Tabla Resumen de Especies</h2>
+                    <p>Comparación de las especies calculadas.</p>
+                </div>
+                
+                <div style="overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                        <thead style="background: rgba(255,255,255,0.05); border-bottom: 2px solid var(--border-color);">
+                            <tr>
+                                <th style="padding: 1rem;">Especie</th>
+                                <th style="padding: 1rem;">Z</th>
+                                <th style="padding: 1rem;">A</th>
+                                <th style="padding: 1rem;">#p⁺</th>
+                                <th style="padding: 1rem;">#n⁰</th>
+                                <th style="padding: 1rem;">#e⁻</th>
+                                <th style="padding: 1rem;">Carga</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
