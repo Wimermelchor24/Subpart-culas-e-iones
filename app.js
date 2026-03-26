@@ -220,8 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
             a: block.querySelector(".inputA"),
             p: block.querySelector(".inputP"),
             e: block.querySelector(".inputE"),
-            n: block.querySelector(".inputN"),
-            c: block.querySelector(".inputCharge")
+            n: block.querySelector(".inputN")
         };
 
         let values = {
@@ -230,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
             p: inputs.p.value ? parseInt(inputs.p.value) : null,
             e: inputs.e.value ? parseInt(inputs.e.value) : null,
             n: inputs.n.value ? parseInt(inputs.n.value) : null,
-            c: inputs.c.value ? parseInt(inputs.c.value) : (inputs.c.value === "0" ? 0 : null)
+            c: null
         };
 
         // Parse species if provided

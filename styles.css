@@ -1,9 +1,9 @@
 :root {
-    --bg-dark: #08090d;
-    --card-bg: rgba(15, 18, 26, 0.65);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --text-primary: #f0f2f5;
-    --text-secondary: #a0a6b5;
+    --bg-dark: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --border-color: rgba(0, 0, 0, 0.08); /* Darker border on white cards */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
     --accent: #ff9f43; /* Bright Orange */
     --accent-hover: #ff7f27;
     --accent-cyan: #00d2d3; /* Vibrant Cyan */
@@ -22,7 +22,7 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background: radial-gradient(circle at center, #141621 0%, #050508 100%);
+    background: radial-gradient(circle at center, #ffffff 0%, #e2e8f0 100%);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
@@ -184,7 +184,7 @@ header h1 {
     font-weight: 700;
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #fff, var(--text-secondary));
+    background: linear-gradient(to right, #0f172a, var(--text-secondary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -220,7 +220,7 @@ header p {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: white;
+    color: var(--text-primary);
 }
 
 .card-header h2 i {
@@ -251,21 +251,22 @@ header p {
 
 .input-group input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     padding: 0.8rem 1rem;
-    color: white;
+    color: var(--text-primary);
     font-family: inherit;
     font-size: 1rem;
     transition: var(--transition);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .input-group input:focus {
     outline: none;
+    background: #fff;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
-    background: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02), 0 0 0 4px rgba(255, 159, 67, 0.15);
 }
 
 /* Browser inner arrows for number inputs styling */
@@ -313,13 +314,13 @@ input[type=number] {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.05); /* instead of rgba(255,255,255,0.05) */
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
 }
 
@@ -329,29 +330,29 @@ input[type=number] {
     align-items: center;
     gap: 2rem;
     margin-bottom: 2rem;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.6);
     padding: 1.5rem;
     border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .symbol-box {
     position: relative;
     width: 120px;
     height: 120px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+    background: linear-gradient(135deg, rgba(255,255,255,1), rgba(240,240,240,1));
     border: 2px solid var(--accent);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 20px rgba(108, 92, 231, 0.2);
+    box-shadow: 0 10px 20px rgba(255, 159, 67, 0.15); /* Orange glow shadow */
 }
 
 .symbol-text {
     font-size: 3.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
 }
 
 .atomic-number {
@@ -385,7 +386,7 @@ input[type=number] {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    color: white;
+    color: var(--text-primary);
 }
 
 .badge-container {
@@ -415,8 +416,9 @@ input[type=number] {
 }
 
 .stat-box {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
     border-radius: 16px;
     padding: 1.5rem;
     text-align: center;
@@ -426,8 +428,9 @@ input[type=number] {
 }
 
 .stat-box:hover {
-    background: rgba(255,255,255,0.06);
+    background: #fff;
     transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
 .stat-icon {
@@ -444,7 +447,7 @@ input[type=number] {
     display: block;
     font-size: 2.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     margin-bottom: 0.2rem;
 }
 
@@ -462,8 +465,8 @@ input[type=number] {
 }
 
 .info-block {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 12px;
     padding: 1.5rem;
 }
@@ -471,7 +474,7 @@ input[type=number] {
 .info-block h4 {
     margin-bottom: 0.5rem;
     font-size: 1rem;
-    color: white;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -499,15 +502,15 @@ input[type=number] {
 }
 
 #summarySection table tbody tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(0, 0, 0, 0.02);
 }
 #summarySection table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.05);
 }
 #summarySection table td {
     padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
 }
 #summarySection table td:first-child {
     font-weight: 700;
