@@ -176,6 +176,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const addSpeciesBtn = document.getElementById("addSpeciesBtn");
     const inputsContainer = document.getElementById("inputsContainer");
     
+    const modelToggle = document.getElementById("modelToggle");
+    const labelBohr = document.getElementById("labelBohr");
+    const labelQuantum = document.getElementById("labelQuantum");
+
+    if (modelToggle) {
+        modelToggle.addEventListener("change", (e) => {
+            const isQuantum = e.target.checked;
+            
+            if (isQuantum) {
+                labelQuantum.classList.add("active");
+                labelBohr.classList.remove("active");
+            } else {
+                labelBohr.classList.add("active");
+                labelQuantum.classList.remove("active");
+            }
+            
+            const visualizer = document.getElementById("atomVisualizer");
+            if (visualizer) {
+                const orbits = visualizer.querySelectorAll(".dynamic-orbit");
+                const qCloud = visualizer.querySelector(".quantum-cloud-container");
+                
+                if (isQuantum) {
+                    orbits.forEach(o => o.style.display = "none");
+                    if (qCloud) qCloud.style.display = "block";
+                } else {
+                    orbits.forEach(o => o.style.display = "block");
+                    if (qCloud) qCloud.style.display = "none";
+                }
+            }
+        });
+    }
+    
     // UI Sections
     const section = document.getElementById("resultsSection");
     const summarySection = document.getElementById("summarySection");
@@ -203,11 +235,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     attachBlockEvents(inputsContainer.querySelector(".species-input-block"));
 
+    const colorThemes = ['theme-cyan', 'theme-pink', 'theme-orange', 'theme-green', 'theme-purple'];
+    let themeIndex = 0;
+
     addSpeciesBtn.addEventListener("click", () => {
         let blocks = inputsContainer.querySelectorAll(".species-input-block");
         let newBlock = blocks[0].cloneNode(true);
         // clean inputs
         newBlock.querySelectorAll("input").forEach(inp => inp.value = "");
+        
+        // Aplicar clase de color dinámica
+        themeIndex++;
+        let assignedTheme = colorThemes[themeIndex % colorThemes.length];
+        colorThemes.forEach(theme => newBlock.classList.remove(theme));
+        newBlock.classList.add(assignedTheme);
+        
         attachBlockEvents(newBlock);
         inputsContainer.appendChild(newBlock);
         updateRemoveButtons();
@@ -280,28 +322,181 @@ document.addEventListener("DOMContentLoaded", () => {
         return values;
     }
 
+    function renderAtomVisualization(p, n, e) {
+        const visualizer = document.getElementById("atomVisualizer");
+        if (!visualizer) return;
+        visualizer.innerHTML = ""; // Clear existing
+
+        // Nucleus
+        const nucleus = document.createElement("div");
+        nucleus.className = "dynamic-nucleus";
+        let nucleusText = `p⁺:${p}`;
+        if (n !== null) {
+            nucleusText += `<br>n⁰:${n}`;
+        }
+        nucleus.innerHTML = nucleusText;
+        visualizer.appendChild(nucleus);
+
+        if (e <= 0) return; // No electrons to draw
+
+        // Simplistic Shell distribution for didactic visualization
+        const shellCapacities = [2, 8, 18, 32, 32, 18, 8];
+        let remainingE = e;
+        let shells = [];
+        
+        for (let cap of shellCapacities) {
+            if (remainingE <= 0) break;
+            let inThisShell = Math.min(remainingE, cap);
+            shells.push(inThisShell);
+            remainingE -= inThisShell;
+        }
+
+        // Draw orbits and electrons
+        const maxRadius = 260; // Slightly larger for pro version
+        const minRadius = 80;
+        const radiusStep = shells.length > 1 ? (maxRadius - minRadius) / (shells.length - 1) : 0;
+
+        shells.forEach((electronsInShell, shellIndex) => {
+            let orbitDiameter = shells.length === 1 ? minRadius : minRadius + (radiusStep * shellIndex);
+            
+            const orbit = document.createElement("div");
+            orbit.className = "dynamic-orbit";
+            if (shellIndex % 2 !== 0) orbit.classList.add("shell-odd");
+            orbit.style.width = `${orbitDiameter}px`;
+            orbit.style.height = `${orbitDiameter}px`;
+
+            // Pro 3D rotations
+            let rotX = 65 + (shellIndex * 5); // Tilt to make it look like a 3D atom
+            let rotY = (shellIndex * 135) % 180; // Spread orbits spherically
+            orbit.style.transform = `translate(-50%, -50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+            const electronContainer = document.createElement("div");
+            electronContainer.className = "dynamic-electron-container";
+            // Inner shells spin faster
+            const duration = 5 + (shellIndex * 2); 
+            const direction = shellIndex % 2 === 0 ? "normal" : "reverse";
+            electronContainer.style.animation = `spin-electron ${duration}s linear infinite ${direction}`;
+
+            for (let i = 0; i < electronsInShell; i++) {
+                const angle = (i / electronsInShell) * 360;
+                const electron = document.createElement("div");
+                electron.className = "dynamic-electron";
+                
+                electron.style.top = "50%";
+                electron.style.left = "50%";
+                // Translate up to orbit edge, counter-rotate X slightly if needed, but glowing orbs look fine as is.
+                electron.style.transform = `translate(-50%, -50%) rotateZ(${angle}deg) translateY(-${orbitDiameter/2}px) rotateX(90deg)`;
+
+                electronContainer.appendChild(electron);
+            }
+
+            orbit.appendChild(electronContainer);
+            visualizer.appendChild(orbit);
+        });
+
+        // Quantum Cloud Generation (Thousands of points)
+        const quantumCloud = document.createElement("div");
+        quantumCloud.className = "quantum-cloud-container";
+        quantumCloud.id = "quantumCloud";
+
+        const canvas = document.createElement("canvas");
+        const size = 280;
+        canvas.width = size;
+        canvas.height = size;
+        canvas.style.position = "absolute";
+        canvas.style.top = "50%";
+        canvas.style.left = "50%";
+        canvas.style.transform = "translate(-50%, -50%)";
+        
+        const ctx = canvas.getContext("2d");
+        const centerX = size / 2;
+        const centerY = size / 2;
+        
+        // Generate thousands of points
+        const totalPoints = Math.min(e * 400 + 2000, 18000); 
+        
+        const shellRadii = [25, 55, 85, 115];
+        
+        for (let i = 0; i < totalPoints; i++) {
+            let shellIndex = 0;
+            let rand = Math.random();
+            if (rand > 0.5 && e > 2) shellIndex = 1;
+            if (rand > 0.75 && e > 10) shellIndex = 2;
+            if (rand > 0.9 && e > 18) shellIndex = 3;
+            
+            // Normal distribution using Box-Muller
+            let u1 = Math.max(Math.random(), 0.0001);
+            let u2 = Math.random();
+            let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            
+            let spread = shellIndex === 0 ? 12 : 18; 
+            let r = Math.abs(shellRadii[shellIndex] + z0 * spread);
+            
+            let theta = Math.random() * 2 * Math.PI;
+            
+            let px = centerX + r * Math.cos(theta);
+            let py = centerY + r * Math.sin(theta);
+            
+            let pSize = Math.random() > 0.85 ? 1.5 : 0.8;
+            
+            if (Math.random() > 0.8) {
+                ctx.fillStyle = "rgba(243, 104, 224, 0.5)"; // Magenta points
+            } else if (Math.random() > 0.6) {
+                ctx.fillStyle = "rgba(108, 92, 231, 0.4)"; // Purple points
+            } else {
+                ctx.fillStyle = "rgba(0, 210, 211, 0.5)"; // Cyan points
+            }
+            
+            ctx.beginPath();
+            ctx.arc(px, py, pSize, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Add a slow rotation animation to the canvas
+        canvas.style.animation = "spin-electron 60s linear infinite";
+
+        quantumCloud.appendChild(canvas);
+        visualizer.appendChild(quantumCloud);
+
+        // Sync visibility with current toggle state
+        const toggle = document.getElementById("modelToggle");
+        if (toggle && toggle.checked) {
+            quantumCloud.style.display = "block";
+            visualizer.querySelectorAll(".dynamic-orbit").forEach(o => o.style.display = "none");
+        }
+    }
+
     btnCalc.addEventListener("click", () => {
         let blocks = inputsContainer.querySelectorAll(".species-input-block");
         let results = [];
         let errors = 0;
 
         blocks.forEach(block => {
+            block.classList.remove('error-state'); // Reset state first
+            
             let solved = solveBlock(block);
+            let valid = true;
+            
             if (solved.z === null) {
-                errors++;
+                valid = false;
             } else {
                 let elDef = getElementByZ(solved.z);
                 if (elDef) {
                     solved.elementDef = elDef;
                     results.push(solved);
                 } else {
-                    errors++;
+                    valid = false;
                 }
+            }
+            
+            if (!valid) {
+                block.classList.add('error-state');
+                errors++;
             }
         });
 
         if (errors > 0 || results.length === 0) {
-            alert("Existen campos sin resolver o con números atómicos inválidos en algunos bloques. Asegúrate de brindar al menos un par de datos (ej. p+ y Carga) para todo lo que agregues.");
+            alert("No pude resolver algunas tablas marcadas en ROJO por falta de datos o inconsistencias. Asegúrate de brindar al menos un par de datos válidos en ellas.");
             return;
         }
 
@@ -346,6 +541,8 @@ document.addEventListener("DOMContentLoaded", () => {
             let isoelectronics = getElementsWithElectrons(solved.e);
             document.getElementById("resIsoelectronic").innerText = `Ejemplos con ${solved.e} e⁻: ${isoelectronics.join(", ")}.`;
 
+            renderAtomVisualization(solved.p, solved.n, solved.e);
+
             section.style.display = "block";
             summarySection.style.display = "none";
         } else {
@@ -383,12 +580,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btnClear.addEventListener("click", () => {
         let blocks = inputsContainer.querySelectorAll(".species-input-block");
         blocks.forEach((block, index) => {
+            block.classList.remove('error-state');
             if (index > 0) {
                 block.remove();
             } else {
                 block.querySelectorAll("input").forEach(inp => inp.value = "");
             }
         });
+        themeIndex = 0;
         updateRemoveButtons();
         section.style.display = "none";
         summarySection.style.display = "none";

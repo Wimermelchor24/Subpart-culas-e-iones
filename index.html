@@ -36,6 +36,7 @@
             <div class="logo">
                 <i class="fa-solid fa-atom"></i>
             </div>
+            <div class="pro-badge">EDICIÓN PRO</div>
             <h1>Estructura Atómica</h1>
             <p>Calculadora interactiva de subpartículas e iones</p>
         </header>
@@ -43,7 +44,7 @@
         <div class="content-wrapper">
             <!-- Contenedor de Ingresos -->
             <div id="inputsContainer">
-                <section class="card input-card species-input-block">
+                <section class="card input-card species-input-block theme-cyan">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h2><i class="fa-solid fa-pen-to-square"></i> Ingresa los Datos</h2>
@@ -53,29 +54,29 @@
                     </div>
                     
                     <div class="inputs-grid">
-                        <div class="input-group" style="grid-column: 1 / -1;">
-                            <label>Símbolo / Especie</label>
-                            <input type="text" class="inputSym" placeholder="X+3">
+                        <div class="input-group">
+                            <label>Ion/Especie</label>
+                            <input type="text" class="inputSym" placeholder="Ejemplo. X+3 o Y-2">
                         </div>
                         <div class="input-group">
                             <label>Número Atómico (Z)</label>
-                            <input type="number" class="inputZ" min="1" max="118" placeholder="Ej. 11">
+                            <input type="number" class="inputZ" min="1" max="118" placeholder="Ejemplo. 11">
                         </div>
                         <div class="input-group">
                             <label>Número de Masa (A)</label>
-                            <input type="number" class="inputA" min="1" placeholder="Ej. 23">
+                            <input type="number" class="inputA" min="1" placeholder="Ejemplo. 23">
                         </div>
                         <div class="input-group">
                             <label>Protones (p⁺)</label>
-                            <input type="number" class="inputP" min="1" max="118" placeholder="Ej. 11">
+                            <input type="number" class="inputP" min="1" max="118" placeholder="Ejemplo. 11">
                         </div>
                         <div class="input-group">
                             <label>Electrones (e⁻)</label>
-                            <input type="number" class="inputE" min="0" placeholder="Ej. 10">
+                            <input type="number" class="inputE" min="0" placeholder="Ejemplo. 10">
                         </div>
                         <div class="input-group">
                             <label>Neutrones (n⁰)</label>
-                            <input type="number" class="inputN" min="0" placeholder="Ej. 12">
+                            <input type="number" class="inputN" min="0" placeholder="Ejemplo. 12">
                         </div>
                     </div>
                 </section>
@@ -106,6 +107,18 @@
                         <div class="atomic-number" id="resZ">11</div>
                         <div class="symbol-text" id="resSymbol">Na</div>
                         <div class="charge-indicator" id="resChargeLabel">+1</div>
+                    </div>
+                    <!-- Dynamic Interactive Atom Visualization -->
+                    <div class="atom-visualizer-wrapper">
+                        <div class="model-toggle-container">
+                            <span class="toggle-label active" id="labelBohr">Bohr</span>
+                            <label class="switch">
+                                <input type="checkbox" id="modelToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="toggle-label" id="labelQuantum">Cuántico</span>
+                        </div>
+                        <div class="atom-visualizer" id="atomVisualizer"></div>
                     </div>
                     <div class="element-info">
                         <h3 id="resName">Sodio</h3>
